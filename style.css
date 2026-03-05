@@ -1,0 +1,216 @@
+/* ===== Reset & Base ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Noto Serif JP', 'Georgia', serif;
+  background-color: #fafaf8;
+  color: #2c2c2c;
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+a {
+  color: #4a7fa5;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Layout ===== */
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ===== Header ===== */
+header {
+  background-color: #2c2c2c;
+  color: #fafaf8;
+  padding: 2rem 0;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2rem;
+  font-weight: normal;
+  letter-spacing: 0.05em;
+}
+
+header p.tagline {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+/* ===== Navigation ===== */
+nav {
+  background-color: #3a3a3a;
+  padding: 0.6rem 0;
+  text-align: center;
+}
+
+nav a {
+  color: #ccc;
+  margin: 0 1rem;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+nav a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+nav a.active {
+  color: #fff;
+  border-bottom: 2px solid #7ab;
+}
+
+/* ===== Main Content ===== */
+main {
+  padding: 2.5rem 0 4rem;
+}
+
+/* ===== Entry List (Index) ===== */
+.entry-list {
+  list-style: none;
+}
+
+.entry-list li {
+  border-bottom: 1px solid #e0e0dc;
+  padding: 1.5rem 0;
+}
+
+.entry-list li:first-child {
+  border-top: 1px solid #e0e0dc;
+}
+
+.entry-meta {
+  font-family: 'Noto Sans JP', 'Courier New', monospace;
+  font-size: 0.82rem;
+  color: #888;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.entry-meta .tag {
+  background-color: #e8f0f7;
+  color: #4a7fa5;
+  border-radius: 3px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.78rem;
+}
+
+.entry-list h2 {
+  font-size: 1.2rem;
+  font-weight: normal;
+  margin-bottom: 0.5rem;
+}
+
+.entry-list h2 a {
+  color: #2c2c2c;
+}
+
+.entry-list h2 a:hover {
+  color: #4a7fa5;
+  text-decoration: none;
+}
+
+.entry-excerpt {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.read-more {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.82rem;
+  color: #4a7fa5;
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+
+/* ===== Single Entry Page ===== */
+.entry-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 2px solid #e0e0dc;
+}
+
+.entry-header h1 {
+  font-size: 1.7rem;
+  font-weight: normal;
+  margin-bottom: 0.6rem;
+  line-height: 1.4;
+}
+
+.entry-body {
+  font-size: 1.05rem;
+  color: #333;
+}
+
+.entry-body p {
+  margin-bottom: 1.2rem;
+}
+
+.entry-body h2 {
+  font-size: 1.15rem;
+  margin: 1.8rem 0 0.6rem;
+  color: #444;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 2rem;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.88rem;
+  color: #4a7fa5;
+}
+
+.back-link::before {
+  content: '← ';
+}
+
+/* ===== About Section ===== */
+.about-section {
+  padding: 2rem 0;
+}
+
+.about-section h2 {
+  font-size: 1.4rem;
+  font-weight: normal;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e0e0dc;
+  padding-bottom: 0.5rem;
+}
+
+.about-section p {
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+/* ===== Hidden / Shown ===== */
+.hidden {
+  display: none;
+}
+
+/* ===== Footer ===== */
+footer {
+  background-color: #2c2c2c;
+  color: #888;
+  text-align: center;
+  padding: 1.5rem 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.82rem;
+}
