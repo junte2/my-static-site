@@ -319,7 +319,7 @@ footer {
   background: rgba(210, 210, 210, 0.75);
   border-radius: 50%;
   top: 4px;
-  right: 4px;
+  left: 4px;
   animation: steam-puff 1.4s ease-out infinite;
 }
 
@@ -330,8 +330,8 @@ footer {
 }
 
 @keyframes train-run {
-  0%   { transform: translateX(-3rem); }
-  100% { transform: translateX(calc(100vw + 1rem)); }
+  0%   { transform: translateX(calc(100vw + 1rem)) scaleX(-1); }
+  100% { transform: translateX(-3rem) scaleX(-1); }
 }
 
 @keyframes steam-puff {
