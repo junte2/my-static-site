@@ -294,3 +294,47 @@ footer {
   font-family: 'Noto Sans JP', sans-serif;
   font-size: 0.82rem;
 }
+
+/* ===== Train Animation ===== */
+.train-scene {
+  position: relative;
+  overflow: hidden;
+  height: 3rem;
+  margin-top: 0.4rem;
+}
+
+.train {
+  position: absolute;
+  font-size: 1.8rem;
+  line-height: 3rem;
+  animation: train-run 12s linear infinite;
+}
+
+.train::before,
+.train::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: rgba(210, 210, 210, 0.75);
+  border-radius: 50%;
+  top: 4px;
+  right: 4px;
+  animation: steam-puff 1.4s ease-out infinite;
+}
+
+.train::after {
+  width: 5px;
+  height: 5px;
+  animation-delay: 0.7s;
+}
+
+@keyframes train-run {
+  0%   { transform: translateX(-3rem); }
+  100% { transform: translateX(calc(100vw + 1rem)); }
+}
+
+@keyframes steam-puff {
+  0%   { opacity: 0.85; transform: translate(0, 0) scale(0.6); }
+  100% { opacity: 0;    transform: translate(4px, -1.8rem) scale(2.5); }
+}
