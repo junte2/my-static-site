@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>テキスト日記</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>テキスト日記</h1>
+      <p class="tagline">日々の記録</p>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#" id="nav-home" class="active" onclick="showPage('home'); return false;">ホーム</a>
+    <a href="#" id="nav-about" onclick="showPage('about'); return false;">このサイトについて</a>
+  </nav>
+
+  <main class="container">
+
+    <!-- ===== Home: Entry List ===== -->
+    <section id="page-home">
+      <ul class="entry-list" id="entry-list"></ul>
+    </section>
+
+    <!-- ===== Entry Detail ===== -->
+    <section id="page-entry" class="hidden">
+      <a href="#" class="back-link" onclick="showPage('home'); return false;">日記一覧に戻る</a>
+      <article>
+        <header class="entry-header">
+          <div class="entry-meta" id="detail-meta"></div>
+          <h1 id="detail-title"></h1>
+        </header>
+        <div class="entry-body" id="detail-body"></div>
+      </article>
+    </section>
+
+    <!-- ===== About ===== -->
+    <section id="page-about" class="hidden">
+      <div class="about-section">
+        <h2>このサイトについて</h2>
+        <p>
+          これは GitHub Pages で公開しているテキスト日記サイトです。
+          日常の出来事、考え、気づきを気ままに記録しています。
+        </p>
+        <p>
+          すべての記事はシンプルなテキストで書かれており、
+          読みやすさを大切にしています。
+        </p>
+        <p>
+          サイトは静的 HTML / CSS / JavaScript のみで構成されており、
+          サーバーサイドの処理は一切使用していません。
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      &copy; 2026 テキスト日記
+    </div>
+  </footer>
+
+  <script>
+    // ===== Diary entries data (static, trusted content only) =====
+    const entries = [
+      {
+        id: 1,
+        date: "2026-03-05",
+        title: "GitHub Pages でサイトを始めた",
+        tags: ["日常"],
+        excerpt: "今日からテキスト日記サイトを始めることにした。シンプルな HTML と CSS だけで作れるので、余計なことを考えずに文章を書くことに集中できそうだ。",
+        body: `<p>今日からテキスト日記サイトを始めることにした。</p>
+<p>GitHub Pages を使えば、リポジトリにファイルをプッシュするだけで公開できる。サーバーの管理も不要で、しかも無料だ。シンプルな HTML と CSS だけで作れるので、余計なことを考えずに文章を書くことに集中できそうだ。</p>
+<p>日記のスタイルについては、できるだけシンプルに保ちたい。フォントはセリフ体にして、背景は白に近い薄いクリーム色にした。読み返すときに目が疲れないようにしたかった。</p>
+<p>これからどんなことを書いていくか、まだはっきりとは決めていないが、日々の気づきや出来事を素直に記録していければと思っている。</p>`
+      },
+      {
+        id: 2,
+        date: "2026-03-04",
+        title: "春の訪れ",
+        tags: ["季節", "散歩"],
+        excerpt: "近所を歩いていたら、梅の花が咲き始めているのに気がついた。まだ肌寒い日が続いているけれど、確かに季節は前に進んでいる。",
+        body: `<p>近所を歩いていたら、梅の花が咲き始めているのに気がついた。</p>
+<p>まだ肌寒い日が続いているけれど、確かに季節は前に進んでいる。白い花びらと、かすかに漂う甘い香り。春の気配はこういう小さなところからやってくるものだなと改めて感じた。</p>
+<p>歩きながら、最近ずっとスクリーンの前に座りっぱなしだったことを思い出した。外の空気を吸って、体を動かすと、頭の中がすっきりする気がする。もう少し意識して歩く時間を作るようにしたい。</p>
+<p>帰りに近くのコーヒーショップで温かいラテを飲んだ。窓の外を眺めながら、特に何も考えない時間が思いのほか心地よかった。</p>`
+      },
+      {
+        id: 3,
+        date: "2026-03-01",
+        title: "読書メモ：静かな生活の楽しみ方",
+        tags: ["読書"],
+        excerpt: "図書館で借りてきた本を読み終えた。「ゆっくり生きること」をテーマにしたエッセイ集で、著者の丁寧な視点に何度もはっとさせられた。",
+        body: `<p>図書館で借りてきた本を読み終えた。</p>
+<p>「ゆっくり生きること」をテーマにしたエッセイ集で、著者の丁寧な視点に何度もはっとさせられた。忙しさを競うように生きていた時期があったことを、少し恥ずかしく思い出した。</p>
+<h2>印象に残った一節</h2>
+<p>「急いでいると、景色が流れていくだけだ。歩みを緩めてはじめて、足元の草や空の色が目に入ってくる。」</p>
+<p>この一節を読んで、昨日の梅の花のことを思い出した。少し立ち止まって周りを見回したからこそ、気づけたことだ。</p>
+<p>本を読んだ後、そのまま公園のベンチに座ってしばらく過ごした。何かをしなければという焦りを手放すのは難しいけれど、少しずつ練習していきたい。</p>`
+      },
+      {
+        id: 4,
+        date: "2026-02-25",
+        title: "ルーティンを見直す",
+        tags: ["日常", "習慣"],
+        excerpt: "朝のルーティンを少し変えてみた。起きてすぐにスマートフォンを見るのをやめて、まずお茶を一杯飲んで、窓の外を眺める時間を作った。",
+        body: `<p>朝のルーティンを少し変えてみた。</p>
+<p>起きてすぐにスマートフォンを見るのをやめて、まずお茶を一杯飲んで、窓の外を眺める時間を作った。たった 10 分ほどのことだけれど、一日の始まりの感じがずいぶん違う。</p>
+<p>以前は目を覚ますなりニュースや SNS を確認していたが、そのたびにどこかざわざわした気分で一日を始めることになっていた。情報を受け取る前に、まず自分自身の状態を整える時間が必要だったのだと思う。</p>
+<p>新しいルーティンを始めてまだ一週間ほどだが、午前中の集中力が少し上がった気がしている。しばらく続けてみようと思う。</p>`
+      },
+      {
+        id: 5,
+        date: "2026-02-18",
+        title: "手書きの良さ",
+        tags: ["日常"],
+        excerpt: "久しぶりに手書きでメモを取ってみたら、考えがまとまるスピードが違うと感じた。キーボードとはまた別の思考のリズムがある。",
+        body: `<p>久しぶりに手書きでメモを取ってみた。</p>
+<p>会議のメモはいつもノートパソコンで取っていたのだが、今日は手元にペンとノートしかなかった。書いてみると、考えがまとまるスピードが違うと感じた。</p>
+<p>キーボードで打つと、思考と入力がほぼ同時進行になる。一方、手書きだと書くスピードが考えるスピードより遅いので、何を書くか選ばなければならない。その「選ぶ」行為が、思考の整理につながっているのかもしれない。</p>
+<p>もちろんデジタルのメモには検索できるという大きな利点があるから、すべてを手書きに切り替えるつもりはない。でも、アイデアを練るときや、考えを整理したいときは、ペンを持つことを意識してみようと思う。</p>`
+      }
+    ];
+
+    // ===== Render entry list =====
+    function renderList() {
+      const ul = document.getElementById('entry-list');
+      ul.innerHTML = '';
+      entries.forEach(entry => {
+        const tagsHtml = entry.tags.map(t => `<span class="tag">${t}</span>`).join(' ');
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="entry-meta">
+            <span>${formatDate(entry.date)}</span>
+            ${tagsHtml}
+          </div>
+          <h2><a href="#" onclick="showEntry(${entry.id}); return false;">${entry.title}</a></h2>
+          <p class="entry-excerpt">${entry.excerpt}</p>
+          <a href="#" class="read-more" onclick="showEntry(${entry.id}); return false;">続きを読む</a>
+        `;
+        ul.appendChild(li);
+      });
+    }
+
+    // ===== Show a single entry =====
+    // Note: entry.body and entry.tags are static, trusted HTML from the
+    // hardcoded entries array above. No user input is ever written via innerHTML.
+    function showEntry(id) {
+      const entry = entries.find(e => e.id === id);
+      if (!entry) return;
+
+      const tagsHtml = entry.tags.map(t => `<span class="tag">${t}</span>`).join(' ');
+      document.getElementById('detail-meta').innerHTML =
+        `<span>${formatDate(entry.date)}</span>${tagsHtml}`;
+      document.getElementById('detail-title').textContent = entry.title;
+      document.getElementById('detail-body').innerHTML = entry.body;
+
+      showPage('entry');
+      window.scrollTo(0, 0);
+    }
+
+    // ===== Page navigation =====
+    function showPage(name) {
+      ['home', 'entry', 'about'].forEach(p => {
+        document.getElementById('page-' + p).classList.toggle('hidden', p !== name);
+      });
+      ['home', 'about'].forEach(p => {
+        const nav = document.getElementById('nav-' + p);
+        if (nav) nav.classList.toggle('active', p === name);
+      });
+    }
+
+    // ===== Utility: format date =====
+    function formatDate(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.getFullYear() + '年' +
+             (d.getMonth() + 1) + '月' +
+             d.getDate() + '日';
+    }
+
+    // ===== Init =====
+    renderList();
+  </script>
+
+</body>
+</html>
