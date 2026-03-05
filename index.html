@@ -93,72 +93,10 @@
   </footer>
 
   <script>
-    // ===== Loaded diary entries (populated asynchronously from diary/*.md) =====
+    // ===== Loaded diary entries (populated from diary/index.json) =====
     let entries = [];
 
-    // ===== Load and parse a single diary markdown file =====
-    // Diary files are static, trusted content committed to the repository.
-    async function loadDiaryFile(dateStr) {
-      const res = await fetch(`diary/${dateStr}.md`);
-      if (!res.ok) throw new Error(`Failed to fetch diary/${dateStr}.md`);
-      const markdown = await res.text();
-
-      // Parse optional YAML frontmatter (--- ... ---)
-      let tags = [];
-      let content = markdown;
-      const fmMatch = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
-      if (fmMatch) {
-        const fmBlock = fmMatch[1];
-        content = fmMatch[2];
-        const tagsLine = fmBlock.match(/^tags:\s*\[(.*)]/m);
-        if (tagsLine && tagsLine[1].trim()) {
-          tags = tagsLine[1].split(',').map(t => t.trim()).filter(Boolean);
-        }
-      }
-
-      // Extract title from the first "# " heading line
-      const lines = content.split('\n');
-      let title = '';
-      const bodyLines = [];
-      for (const line of lines) {
-        if (!title && line.startsWith('# ')) {
-          title = line.slice(2).trim();
-        } else {
-          bodyLines.push(line);
-        }
-      }
-      const bodyMarkdown = bodyLines.join('\n').trim();
-
-      // Generate a plain-text excerpt (~2 lines) from the body
-      const plainText = bodyMarkdown
-        .replace(/^#{1,6}\s+.*/gm, '')   // strip headings
-        .replace(/\*{1,2}([^*]+)\*{1,2}/g, '$1') // strip bold/italic
-        .replace(/`[^`]+`/g, '')          // strip inline code
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); // strip links
-      const excerptLines = plainText.split('\n')
-        .map(l => l.trim())
-        .filter(l => l.length > 0)
-        .slice(0, 2)
-        .join(' ')
-        .slice(0, 100);
-
-      // Convert yyyymmdd → yyyy-mm-dd for formatting
-      const isoDate = `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}`;
-
-      // bodyHtml is generated from trusted repository content via marked
-      const bodyHtml = marked.parse(bodyMarkdown);
-
-      return {
-        id: dateStr,
-        date: isoDate,
-        title: title || dateStr,
-        tags,
-        excerpt: excerptLines,
-        bodyHtml
-      };
-    }
-
-    // ===== Render entry list =====
+    // ===== Render tag badges into a container element =====
     function renderTags(container, tags) {
       tags.forEach(tag => {
         const tagSpan = document.createElement('span');
@@ -168,6 +106,7 @@
       });
     }
 
+    // ===== Render entry list from index.json data =====
     function renderList() {
       const ul = document.getElementById('entry-list');
       ul.innerHTML = '';
@@ -188,30 +127,18 @@
         titleLink.addEventListener('click', e => { e.preventDefault(); showEntry(entry.id); });
         h2.appendChild(titleLink);
 
-        const excerptP = document.createElement('p');
-        excerptP.className = 'entry-excerpt';
-        excerptP.textContent = entry.excerpt;
-
-        const readMore = document.createElement('a');
-        readMore.href = '#';
-        readMore.className = 'read-more';
-        readMore.textContent = '続きを読む';
-        readMore.addEventListener('click', e => { e.preventDefault(); showEntry(entry.id); });
-
         li.appendChild(meta);
         li.appendChild(h2);
-        li.appendChild(excerptP);
-        li.appendChild(readMore);
         ul.appendChild(li);
       });
     }
 
-    // ===== Show a single entry in modal =====
-    // entry.bodyHtml is generated from trusted repository markdown files.
-    function showEntry(id) {
+    // ===== Show a single entry in modal (lazy-loads the .md file) =====
+    async function showEntry(id) {
       const entry = entries.find(e => e.id === id);
       if (!entry) return;
 
+      // Populate header immediately from index.json data
       const modalMeta = document.getElementById('modal-meta');
       modalMeta.innerHTML = '';
       const dateSpan = document.createElement('span');
@@ -220,7 +147,7 @@
       renderTags(modalMeta, entry.tags);
 
       document.getElementById('modal-title').textContent = entry.title;
-      document.getElementById('modal-body').innerHTML = entry.bodyHtml;
+      document.getElementById('modal-body').textContent = '';
 
       const overlay = document.getElementById('entry-modal');
       overlay.classList.add('is-open');
@@ -228,6 +155,35 @@
       document.body.style.overflow = 'hidden';
       document.body.style.paddingRight = scrollbarWidth + 'px';
       document.getElementById('modal-close-btn').focus();
+
+      // Lazy-load the markdown body from the .md file
+      // .md files are static, trusted content committed to the repository.
+      try {
+        const res = await fetch(`diary/${id}.md`);
+        if (!res.ok) throw new Error(`Failed to fetch diary/${id}.md`);
+        const markdown = await res.text();
+
+        // Strip optional YAML frontmatter
+        let content = markdown;
+        const fmMatch = markdown.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n([\s\S]*)$/);
+        if (fmMatch) content = fmMatch[1];
+
+        // Strip the title heading (first "# " line) to avoid repeating it in the body
+        let bodyMarkdown = content;
+        const firstHeadingIdx = content.split('\n').findIndex(l => l.startsWith('# '));
+        if (firstHeadingIdx !== -1) {
+          const lines = content.split('\n');
+          lines.splice(firstHeadingIdx, 1);
+          bodyMarkdown = lines.join('\n');
+        }
+        bodyMarkdown = bodyMarkdown.trim();
+
+        // bodyHtml is generated from trusted repository markdown content via marked
+        document.getElementById('modal-body').innerHTML = marked.parse(bodyMarkdown);
+      } catch (e) {
+        console.error('日記の読み込みに失敗しました:', e);
+        document.getElementById('modal-body').textContent = '本文の読み込みに失敗しました。';
+      }
     }
 
     // ===== Close modal =====
@@ -270,14 +226,19 @@
              d.getDate() + '日';
     }
 
-    // ===== Init: load diary entries from diary/index.json =====
+    // ===== Init: load entry manifest from diary/index.json =====
     (async function init() {
       try {
         const res = await fetch('diary/index.json');
-        const dates = await res.json();
-        entries = await Promise.all(dates.map(loadDiaryFile));
+        const manifest = await res.json();
+        entries = manifest.map(item => ({
+          id: item.date,
+          date: `${item.date.slice(0, 4)}-${item.date.slice(4, 6)}-${item.date.slice(6, 8)}`,
+          title: item.title,
+          tags: item.tags || []
+        }));
       } catch (e) {
-        console.error('日記の読み込みに失敗しました:', e);
+        console.error('日記インデックスの読み込みに失敗しました:', e);
       }
       renderList();
     })();
