@@ -103,8 +103,21 @@
       if (!res.ok) throw new Error(`Failed to fetch diary/${dateStr}.md`);
       const markdown = await res.text();
 
+      // Parse optional YAML frontmatter (--- ... ---)
+      let tags = [];
+      let content = markdown;
+      const fmMatch = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+      if (fmMatch) {
+        const fmBlock = fmMatch[1];
+        content = fmMatch[2];
+        const tagsLine = fmBlock.match(/^tags:\s*\[(.*)]/m);
+        if (tagsLine && tagsLine[1].trim()) {
+          tags = tagsLine[1].split(',').map(t => t.trim()).filter(Boolean);
+        }
+      }
+
       // Extract title from the first "# " heading line
-      const lines = markdown.split('\n');
+      const lines = content.split('\n');
       let title = '';
       const bodyLines = [];
       for (const line of lines) {
@@ -139,12 +152,22 @@
         id: dateStr,
         date: isoDate,
         title: title || dateStr,
+        tags,
         excerpt: excerptLines,
         bodyHtml
       };
     }
 
     // ===== Render entry list =====
+    function renderTags(container, tags) {
+      tags.forEach(tag => {
+        const tagSpan = document.createElement('span');
+        tagSpan.className = 'tag';
+        tagSpan.textContent = tag;
+        container.appendChild(tagSpan);
+      });
+    }
+
     function renderList() {
       const ul = document.getElementById('entry-list');
       ul.innerHTML = '';
@@ -156,6 +179,7 @@
         const dateSpan = document.createElement('span');
         dateSpan.textContent = formatDate(entry.date);
         meta.appendChild(dateSpan);
+        renderTags(meta, entry.tags);
 
         const h2 = document.createElement('h2');
         const titleLink = document.createElement('a');
@@ -193,6 +217,7 @@
       const dateSpan = document.createElement('span');
       dateSpan.textContent = formatDate(entry.date);
       modalMeta.appendChild(dateSpan);
+      renderTags(modalMeta, entry.tags);
 
       document.getElementById('modal-title').textContent = entry.title;
       document.getElementById('modal-body').innerHTML = entry.bodyHtml;
