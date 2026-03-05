@@ -133,20 +133,17 @@
       });
     }
 
-    // ===== Show a single entry in modal (lazy-loads the .md file) =====
+    // ===== Show a single entry in modal (fetches the .md file for all content) =====
     async function showEntry(id) {
-      const entry = entries.find(e => e.id === id);
-      if (!entry) return;
-
-      // Populate header immediately from index.json data
+      // Open modal immediately with date and loading indicator
       const modalMeta = document.getElementById('modal-meta');
       modalMeta.innerHTML = '';
       const dateSpan = document.createElement('span');
-      dateSpan.textContent = formatDate(entry.date);
+      const dateForDisplay = `${id.slice(0, 4)}-${id.slice(4, 6)}-${id.slice(6, 8)}`;
+      dateSpan.textContent = formatDate(dateForDisplay);
       modalMeta.appendChild(dateSpan);
-      renderTags(modalMeta, entry.tags);
 
-      document.getElementById('modal-title').textContent = entry.title;
+      document.getElementById('modal-title').textContent = '読み込み中…';
       document.getElementById('modal-body').textContent = '';
 
       const overlay = document.getElementById('entry-modal');
@@ -156,32 +153,45 @@
       document.body.style.paddingRight = scrollbarWidth + 'px';
       document.getElementById('modal-close-btn').focus();
 
-      // Lazy-load the markdown body from the .md file
+      // Fetch the .md file and extract tags, title, and body from it.
       // .md files are static, trusted content committed to the repository.
       try {
         const res = await fetch(`diary/${id}.md`);
         if (!res.ok) throw new Error(`Failed to fetch diary/${id}.md`);
         const markdown = await res.text();
 
-        // Strip optional YAML frontmatter
+        // Strip optional YAML frontmatter and extract tags
         let content = markdown;
-        const fmMatch = markdown.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n([\s\S]*)$/);
-        if (fmMatch) content = fmMatch[1];
-
-        // Strip the title heading (first "# " line) to avoid repeating it in the body
-        let bodyMarkdown = content;
-        const firstHeadingIdx = content.split('\n').findIndex(l => l.startsWith('# '));
-        if (firstHeadingIdx !== -1) {
-          const lines = content.split('\n');
-          lines.splice(firstHeadingIdx, 1);
-          bodyMarkdown = lines.join('\n');
+        let tags = [];
+        const fmMatch = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+        if (fmMatch) {
+          const fm = fmMatch[1];
+          content = fmMatch[2];
+          const tagsMatch = fm.match(/^tags:\s*\[([^\]]*)\]/m);
+          if (tagsMatch) {
+            tags = tagsMatch[1].split(',').map(t => t.trim()).filter(Boolean);
+          }
         }
-        bodyMarkdown = bodyMarkdown.trim();
 
+        // Extract title from the first "# " heading
+        const lines = content.split('\n');
+        const titleIdx = lines.findIndex(l => l.startsWith('# '));
+        let title = dateForDisplay; // fallback: formatted date if no # heading found
+        let bodyLines = lines.slice();
+        if (titleIdx !== -1) {
+          title = lines[titleIdx].replace(/^#\s+/, '');
+          bodyLines.splice(titleIdx, 1);
+        }
+        const bodyMarkdown = bodyLines.join('\n').trim();
+
+        // Update modal header with tags and title parsed from the .md file
+        renderTags(modalMeta, tags);
+        document.getElementById('modal-title').textContent = title;
         // bodyHtml is generated from trusted repository markdown content via marked
         document.getElementById('modal-body').innerHTML = marked.parse(bodyMarkdown);
       } catch (e) {
         console.error('日記の読み込みに失敗しました:', e);
+        document.getElementById('modal-title').textContent = '読み込みエラー';
         document.getElementById('modal-body').textContent = '本文の読み込みに失敗しました。';
       }
     }
