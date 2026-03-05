@@ -63,6 +63,20 @@
 
   </main>
 
+  <!-- ===== Modal ===== -->
+  <div id="entry-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close-btn" aria-label="閉じる">&times;</button>
+      <article>
+        <header class="entry-header">
+          <div class="entry-meta" id="modal-meta"></div>
+          <h1 id="modal-title"></h1>
+        </header>
+        <div class="entry-body" id="modal-body"></div>
+      </article>
+    </div>
+  </div>
+
   <footer>
     <div class="container">
       &copy; 2026 テキスト日記
@@ -151,7 +165,7 @@
       });
     }
 
-    // ===== Show a single entry =====
+    // ===== Show a single entry in modal =====
     // Note: entry.body and entry.tags are static, trusted HTML from the
     // hardcoded entries array above. No user input is ever written via innerHTML.
     function showEntry(id) {
@@ -159,14 +173,39 @@
       if (!entry) return;
 
       const tagsHtml = entry.tags.map(t => `<span class="tag">${t}</span>`).join(' ');
-      document.getElementById('detail-meta').innerHTML =
+      document.getElementById('modal-meta').innerHTML =
         `<span>${formatDate(entry.date)}</span>${tagsHtml}`;
-      document.getElementById('detail-title').textContent = entry.title;
-      document.getElementById('detail-body').innerHTML = entry.body;
+      document.getElementById('modal-title').textContent = entry.title;
+      document.getElementById('modal-body').innerHTML = entry.body;
 
-      showPage('entry');
-      window.scrollTo(0, 0);
+      const overlay = document.getElementById('entry-modal');
+      overlay.classList.add('is-open');
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = scrollbarWidth + 'px';
+      document.getElementById('modal-close-btn').focus();
     }
+
+    // ===== Close modal =====
+    function closeModal() {
+      const overlay = document.getElementById('entry-modal');
+      overlay.classList.remove('is-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
+    // Close modal when clicking the backdrop (outside the modal content)
+    document.getElementById('entry-modal').addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Close modal when clicking the close button
+    document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeModal();
+    });
 
     // ===== Page navigation =====
     function showPage(name) {
