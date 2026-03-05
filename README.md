@@ -11,10 +11,30 @@ GitHub Pages で公開するテキスト日記サイトです。
 
 ```
 .
-├── index.html   # メインページ（日記一覧 & 記事詳細）
-├── style.css    # スタイルシート
+├── index.html        # メインページ（日記一覧 & 記事詳細モーダル）
+├── style.css         # スタイルシート
+├── diary/
+│   ├── index.json    # 日記ファイルの一覧（yyyymmdd 形式の配列）
+│   ├── 20260305.md   # 日記ファイル（yyyymmdd.md 形式）
+│   └── ...
 └── README.md
 ```
+
+## 日記の追加方法
+
+1. `diary/yyyymmdd.md` を作成し、以下の形式で記述します。
+
+   ```markdown
+   # タイトル
+
+   本文（マークダウン記法）
+   ```
+
+2. `diary/index.json` の配列の先頭に `"yyyymmdd"` を追加します。
+
+   ```json
+   ["20260306", "20260305", ...]
+   ```
 
 ## 公開方法
 

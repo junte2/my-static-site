@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked@17.0.4/marked.min.js"></script>
 </head>
 <body>
 
@@ -92,99 +93,109 @@
   </footer>
 
   <script>
-    // ===== Diary entries data (static, trusted content only) =====
-    const entries = [
-      {
-        id: 1,
-        date: "2026-03-05",
-        title: "GitHub Pages でサイトを始めた",
-        tags: ["日常"],
-        excerpt: "今日からテキスト日記サイトを始めることにした。シンプルな HTML と CSS だけで作れるので、余計なことを考えずに文章を書くことに集中できそうだ。",
-        body: `<p>今日からテキスト日記サイトを始めることにした。</p>
-<p>GitHub Pages を使えば、リポジトリにファイルをプッシュするだけで公開できる。サーバーの管理も不要で、しかも無料だ。シンプルな HTML と CSS だけで作れるので、余計なことを考えずに文章を書くことに集中できそうだ。</p>
-<p>日記のスタイルについては、できるだけシンプルに保ちたい。フォントはセリフ体にして、背景は白に近い薄いクリーム色にした。読み返すときに目が疲れないようにしたかった。</p>
-<p>これからどんなことを書いていくか、まだはっきりとは決めていないが、日々の気づきや出来事を素直に記録していければと思っている。</p>`
-      },
-      {
-        id: 2,
-        date: "2026-03-04",
-        title: "春の訪れ",
-        tags: ["季節", "散歩"],
-        excerpt: "近所を歩いていたら、梅の花が咲き始めているのに気がついた。まだ肌寒い日が続いているけれど、確かに季節は前に進んでいる。",
-        body: `<p>近所を歩いていたら、梅の花が咲き始めているのに気がついた。</p>
-<p>まだ肌寒い日が続いているけれど、確かに季節は前に進んでいる。白い花びらと、かすかに漂う甘い香り。春の気配はこういう小さなところからやってくるものだなと改めて感じた。</p>
-<p>歩きながら、最近ずっとスクリーンの前に座りっぱなしだったことを思い出した。外の空気を吸って、体を動かすと、頭の中がすっきりする気がする。もう少し意識して歩く時間を作るようにしたい。</p>
-<p>帰りに近くのコーヒーショップで温かいラテを飲んだ。窓の外を眺めながら、特に何も考えない時間が思いのほか心地よかった。</p>`
-      },
-      {
-        id: 3,
-        date: "2026-03-01",
-        title: "読書メモ：静かな生活の楽しみ方",
-        tags: ["読書"],
-        excerpt: "図書館で借りてきた本を読み終えた。「ゆっくり生きること」をテーマにしたエッセイ集で、著者の丁寧な視点に何度もはっとさせられた。",
-        body: `<p>図書館で借りてきた本を読み終えた。</p>
-<p>「ゆっくり生きること」をテーマにしたエッセイ集で、著者の丁寧な視点に何度もはっとさせられた。忙しさを競うように生きていた時期があったことを、少し恥ずかしく思い出した。</p>
-<h2>印象に残った一節</h2>
-<p>「急いでいると、景色が流れていくだけだ。歩みを緩めてはじめて、足元の草や空の色が目に入ってくる。」</p>
-<p>この一節を読んで、昨日の梅の花のことを思い出した。少し立ち止まって周りを見回したからこそ、気づけたことだ。</p>
-<p>本を読んだ後、そのまま公園のベンチに座ってしばらく過ごした。何かをしなければという焦りを手放すのは難しいけれど、少しずつ練習していきたい。</p>`
-      },
-      {
-        id: 4,
-        date: "2026-02-25",
-        title: "ルーティンを見直す",
-        tags: ["日常", "習慣"],
-        excerpt: "朝のルーティンを少し変えてみた。起きてすぐにスマートフォンを見るのをやめて、まずお茶を一杯飲んで、窓の外を眺める時間を作った。",
-        body: `<p>朝のルーティンを少し変えてみた。</p>
-<p>起きてすぐにスマートフォンを見るのをやめて、まずお茶を一杯飲んで、窓の外を眺める時間を作った。たった 10 分ほどのことだけれど、一日の始まりの感じがずいぶん違う。</p>
-<p>以前は目を覚ますなりニュースや SNS を確認していたが、そのたびにどこかざわざわした気分で一日を始めることになっていた。情報を受け取る前に、まず自分自身の状態を整える時間が必要だったのだと思う。</p>
-<p>新しいルーティンを始めてまだ一週間ほどだが、午前中の集中力が少し上がった気がしている。しばらく続けてみようと思う。</p>`
-      },
-      {
-        id: 5,
-        date: "2026-02-18",
-        title: "手書きの良さ",
-        tags: ["日常"],
-        excerpt: "久しぶりに手書きでメモを取ってみたら、考えがまとまるスピードが違うと感じた。キーボードとはまた別の思考のリズムがある。",
-        body: `<p>久しぶりに手書きでメモを取ってみた。</p>
-<p>会議のメモはいつもノートパソコンで取っていたのだが、今日は手元にペンとノートしかなかった。書いてみると、考えがまとまるスピードが違うと感じた。</p>
-<p>キーボードで打つと、思考と入力がほぼ同時進行になる。一方、手書きだと書くスピードが考えるスピードより遅いので、何を書くか選ばなければならない。その「選ぶ」行為が、思考の整理につながっているのかもしれない。</p>
-<p>もちろんデジタルのメモには検索できるという大きな利点があるから、すべてを手書きに切り替えるつもりはない。でも、アイデアを練るときや、考えを整理したいときは、ペンを持つことを意識してみようと思う。</p>`
+    // ===== Loaded diary entries (populated asynchronously from diary/*.md) =====
+    let entries = [];
+
+    // ===== Load and parse a single diary markdown file =====
+    // Diary files are static, trusted content committed to the repository.
+    async function loadDiaryFile(dateStr) {
+      const res = await fetch(`diary/${dateStr}.md`);
+      if (!res.ok) throw new Error(`Failed to fetch diary/${dateStr}.md`);
+      const markdown = await res.text();
+
+      // Extract title from the first "# " heading line
+      const lines = markdown.split('\n');
+      let title = '';
+      const bodyLines = [];
+      for (const line of lines) {
+        if (!title && line.startsWith('# ')) {
+          title = line.slice(2).trim();
+        } else {
+          bodyLines.push(line);
+        }
       }
-    ];
+      const bodyMarkdown = bodyLines.join('\n').trim();
+
+      // Generate a plain-text excerpt (~2 lines) from the body
+      const plainText = bodyMarkdown
+        .replace(/^#{1,6}\s+.*/gm, '')   // strip headings
+        .replace(/\*{1,2}([^*]+)\*{1,2}/g, '$1') // strip bold/italic
+        .replace(/`[^`]+`/g, '')          // strip inline code
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1'); // strip links
+      const excerptLines = plainText.split('\n')
+        .map(l => l.trim())
+        .filter(l => l.length > 0)
+        .slice(0, 2)
+        .join(' ')
+        .slice(0, 100);
+
+      // Convert yyyymmdd → yyyy-mm-dd for formatting
+      const isoDate = `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}`;
+
+      // bodyHtml is generated from trusted repository content via marked
+      const bodyHtml = marked.parse(bodyMarkdown);
+
+      return {
+        id: dateStr,
+        date: isoDate,
+        title: title || dateStr,
+        excerpt: excerptLines,
+        bodyHtml
+      };
+    }
 
     // ===== Render entry list =====
     function renderList() {
       const ul = document.getElementById('entry-list');
       ul.innerHTML = '';
       entries.forEach(entry => {
-        const tagsHtml = entry.tags.map(t => `<span class="tag">${t}</span>`).join(' ');
         const li = document.createElement('li');
-        li.innerHTML = `
-          <div class="entry-meta">
-            <span>${formatDate(entry.date)}</span>
-            ${tagsHtml}
-          </div>
-          <h2><a href="#" onclick="showEntry(${entry.id}); return false;">${entry.title}</a></h2>
-          <p class="entry-excerpt">${entry.excerpt}</p>
-          <a href="#" class="read-more" onclick="showEntry(${entry.id}); return false;">続きを読む</a>
-        `;
+
+        const meta = document.createElement('div');
+        meta.className = 'entry-meta';
+        const dateSpan = document.createElement('span');
+        dateSpan.textContent = formatDate(entry.date);
+        meta.appendChild(dateSpan);
+
+        const h2 = document.createElement('h2');
+        const titleLink = document.createElement('a');
+        titleLink.href = '#';
+        titleLink.textContent = entry.title;
+        titleLink.addEventListener('click', e => { e.preventDefault(); showEntry(entry.id); });
+        h2.appendChild(titleLink);
+
+        const excerptP = document.createElement('p');
+        excerptP.className = 'entry-excerpt';
+        excerptP.textContent = entry.excerpt;
+
+        const readMore = document.createElement('a');
+        readMore.href = '#';
+        readMore.className = 'read-more';
+        readMore.textContent = '続きを読む';
+        readMore.addEventListener('click', e => { e.preventDefault(); showEntry(entry.id); });
+
+        li.appendChild(meta);
+        li.appendChild(h2);
+        li.appendChild(excerptP);
+        li.appendChild(readMore);
         ul.appendChild(li);
       });
     }
 
     // ===== Show a single entry in modal =====
-    // Note: entry.body and entry.tags are static, trusted HTML from the
-    // hardcoded entries array above. No user input is ever written via innerHTML.
+    // entry.bodyHtml is generated from trusted repository markdown files.
     function showEntry(id) {
       const entry = entries.find(e => e.id === id);
       if (!entry) return;
 
-      const tagsHtml = entry.tags.map(t => `<span class="tag">${t}</span>`).join(' ');
-      document.getElementById('modal-meta').innerHTML =
-        `<span>${formatDate(entry.date)}</span>${tagsHtml}`;
+      const modalMeta = document.getElementById('modal-meta');
+      modalMeta.innerHTML = '';
+      const dateSpan = document.createElement('span');
+      dateSpan.textContent = formatDate(entry.date);
+      modalMeta.appendChild(dateSpan);
+
       document.getElementById('modal-title').textContent = entry.title;
-      document.getElementById('modal-body').innerHTML = entry.body;
+      document.getElementById('modal-body').innerHTML = entry.bodyHtml;
 
       const overlay = document.getElementById('entry-modal');
       overlay.classList.add('is-open');
@@ -234,8 +245,17 @@
              d.getDate() + '日';
     }
 
-    // ===== Init =====
-    renderList();
+    // ===== Init: load diary entries from diary/index.json =====
+    (async function init() {
+      try {
+        const res = await fetch('diary/index.json');
+        const dates = await res.json();
+        entries = await Promise.all(dates.map(loadDiaryFile));
+      } catch (e) {
+        console.error('日記の読み込みに失敗しました:', e);
+      }
+      renderList();
+    })();
   </script>
 
 </body>
